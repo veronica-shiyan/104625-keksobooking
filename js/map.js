@@ -16,8 +16,8 @@ var ARTICLE_TYPES = [
     rus: 'Бунгало'
   }
 ];
-var ARTICLE_CHECKIN_TIMES =['12:00', '13:00', '14:00'];
-var ARTICLE_CHECKOUT_TIMES =['12:00', '13:00', '14:00'];
+var ARTICLE_CHECKIN_TIMES = ['12:00', '13:00', '14:00'];
+var ARTICLE_CHECKOUT_TIMES = ['12:00', '13:00', '14:00'];
 var ARTICLE_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var ARTICLE_PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 var ARTICLE_QUANTITY = 8;
@@ -25,7 +25,7 @@ var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
 
 // Функция расчета случайного числа в заданом диапазоне
-function randomInteger (min, max) {
+function randomInteger(min, max) {
   var rand = min + Math.random() * (max + 1 - min);
   rand = Math.floor(rand);
   return rand;
@@ -35,8 +35,8 @@ function randomInteger (min, max) {
 var createArticleData = function (quantity) {
   var articles = [];
   for (var i = 0; i < quantity; i++) {
-    var articleLocationX = randomInteger (300, 900);
-    var articleLocationY = randomInteger (150, 500);
+    var articleLocationX = randomInteger(300, 900);
+    var articleLocationY = randomInteger(150, 500);
 
     articles[i] = {
       author: {
@@ -45,14 +45,14 @@ var createArticleData = function (quantity) {
       offer: {
         title: ARTICLE_TITLES[Math.floor(Math.random() * ARTICLE_TITLES.length)].en,
         address: articleLocationX + ', ' + articleLocationY,
-        price: randomInteger (1000, 1000000),
+        price: randomInteger(1000, 1000000),
         type: ARTICLE_TYPES[Math.floor(Math.random() * ARTICLE_TYPES.length)],
-        rooms: randomInteger (1, 5),
-        guests: randomInteger (1, 100),
+        rooms: randomInteger(1, 5),
+        guests: randomInteger(1, 100),
         checkin: ARTICLE_CHECKIN_TIMES[Math.floor(Math.random() * ARTICLE_CHECKIN_TIMES.length)],
         checkout: ARTICLE_CHECKOUT_TIMES[Math.floor(Math.random() * ARTICLE_CHECKOUT_TIMES.length)],
-        features: ARTICLE_FEATURES.filter (function () {
-          return randomInteger (0, 1);
+        features: ARTICLE_FEATURES.filter(function () {
+          return randomInteger(0, 1);
         }),
         description: '',
         photos: ARTICLE_PHOTOS
@@ -61,7 +61,7 @@ var createArticleData = function (quantity) {
         x: articleLocationX,
         y: articleLocationY
       }
-    }
+    };
   }
   return articles;
 };
@@ -85,7 +85,7 @@ var createPinElements = function (articles) {
   for (var i = 0; i < articles.length; i++) {
     var pinElement = cloneMapPin.cloneNode(true);
 
-    pinElement.style.left = articles[i].location.x - PIN_WIDTH/2 + 'px';
+    pinElement.style.left = articles[i].location.x - PIN_WIDTH / 2 + 'px';
     pinElement.style.top = articles[i].location.y - PIN_HEIGHT + 'px';
     pinElement.children[0].src = articles[i].author.avatar;
 
@@ -132,7 +132,7 @@ var createArticleElement = function (article) {
   return articleElement;
 };
 
-//функцию заполнения блока DOM-элементами на основе массива JS-объектов
+// функцию заполнения блока DOM-элементами на основе массива JS-объектов
 var renderArticle = function (articleElement) {
   var fragmentArticle = document.createDocumentFragment();
   fragmentArticle.appendChild(articleElement);
@@ -149,7 +149,7 @@ var renderPin = function (pinElements) {
   pastMapPin.appendChild(fragmentPin);
 };
 
-//Вызовы функций
+// Вызовы функций
 var articles = createArticleData(ARTICLE_QUANTITY);
 var articleElement = createArticleElement(articles[0]);
 renderArticle(articleElement);
