@@ -25,7 +25,7 @@ var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
 
 // Функция расчета случайного числа в заданом диапазоне
-function randomInteger(min, max) {
+function calculateRandomInteger(min, max) {
   var rand = min + Math.random() * (max + 1 - min);
   rand = Math.floor(rand);
   return rand;
@@ -35,8 +35,8 @@ function randomInteger(min, max) {
 var createArticleData = function (quantity) {
   var articles = [];
   for (var i = 0; i < quantity; i++) {
-    var articleLocationX = randomInteger(300, 900);
-    var articleLocationY = randomInteger(150, 500);
+    var articleLocationX = calculateRandomInteger(300, 900);
+    var articleLocationY = calculateRandomInteger(150, 500);
 
     articles[i] = {
       author: {
@@ -45,14 +45,14 @@ var createArticleData = function (quantity) {
       offer: {
         title: ARTICLE_TITLES[Math.floor(Math.random() * ARTICLE_TITLES.length)].en,
         address: articleLocationX + ', ' + articleLocationY,
-        price: randomInteger(1000, 1000000),
+        price: calculateRandomInteger(1000, 1000000),
         type: ARTICLE_TYPES[Math.floor(Math.random() * ARTICLE_TYPES.length)],
-        rooms: randomInteger(1, 5),
-        guests: randomInteger(1, 100),
+        rooms: calculateRandomInteger(1, 5),
+        guests: calculateRandomInteger(1, 100),
         checkin: ARTICLE_CHECKIN_TIMES[Math.floor(Math.random() * ARTICLE_CHECKIN_TIMES.length)],
         checkout: ARTICLE_CHECKOUT_TIMES[Math.floor(Math.random() * ARTICLE_CHECKOUT_TIMES.length)],
         features: ARTICLE_FEATURES.filter(function () {
-          return randomInteger(0, 1);
+          return calculateRandomInteger(0, 1);
         }),
         description: '',
         photos: ARTICLE_PHOTOS
@@ -71,12 +71,11 @@ var map = document.querySelector('.map');
 map.classList.remove('map--faded');
 
 //
-var cloneMapPin = document.querySelector('template').content;
-cloneMapPin = cloneMapPin.querySelector('.map__pin');
+var copyExample = document.querySelector('template').content;
+var cloneMapPin = copyExample.querySelector('.map__pin');
 var pastMapPin = document.querySelector('.map__pins');
 
-var cloneArticle = document.querySelector('template').content;
-cloneArticle = cloneArticle.querySelector('.map__card');
+var cloneArticle = copyExample.querySelector('.map__card');
 var pastArticle = document.querySelector('.map__filters-container');
 
 // Функция создания DOM-элемента на основе JS-объекта
@@ -118,7 +117,7 @@ var createArticleElement = function (article) {
   articleElement.querySelector('.popup__features + p').textContent = article.offer.description;
 
   var photoList = articleElement.querySelector('.popup__pictures');
-  for (var i = 0; i < 3; i++) {
+  for (var i = 0; i < article.offer.photos.length; i++) {
     var photoElement = photoList.querySelector('li').cloneNode(true);
     photoList.appendChild(photoElement);
 
@@ -134,10 +133,7 @@ var createArticleElement = function (article) {
 
 // функцию заполнения блока DOM-элементами на основе массива JS-объектов
 var renderArticle = function (articleElement) {
-  var fragmentArticle = document.createDocumentFragment();
-  fragmentArticle.appendChild(articleElement);
-
-  map.insertBefore(fragmentArticle, pastArticle);
+  map.insertBefore(articleElement, pastArticle);
 };
 
 var renderPin = function (pinElements) {
