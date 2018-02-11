@@ -26,12 +26,12 @@ var PIN_HEIGHT = 70;
 
 var MAP_COORDINATES = {
   width: {
-    x1: 300,
-    x2: 900
+    min: 300,
+    max: 900
   },
   height: {
-    y1: 150,
-    y2: 500
+    min: 150,
+    max: 500
   }
 };
 
@@ -48,8 +48,8 @@ function calculateRandomInteger(min, max) {
 var createArticleData = function (quantity) {
   var articles = [];
   for (var i = 0; i < quantity; i++) {
-    var articleLocationX = calculateRandomInteger(MAP_COORDINATES.width.x1, MAP_COORDINATES.width.x2);
-    var articleLocationY = calculateRandomInteger(MAP_COORDINATES.height.y1, MAP_COORDINATES.height.y2);
+    var articleLocationX = calculateRandomInteger(MAP_COORDINATES.width.min, MAP_COORDINATES.width.max);
+    var articleLocationY = calculateRandomInteger(MAP_COORDINATES.height.min, MAP_COORDINATES.height.max);
 
     articles[i] = {
       author: {
@@ -208,12 +208,14 @@ var getCoords = function (element) {
   };
 };
 
+var mapLocation = getCoords(map);
+
 var mainPinLocation = getCoords(mainPin);
 var calculateMainPinPosition = function () {
-  var mainPinLocationX = Math.floor(mainPinLocation.left + MAIN_PIN_WIDTH / 2);
-  var mainPinLocationY = Math.floor(mainPinLocation.top + MAIN_PIN_HEIGHT / 2);
+  var mainPinLocationX = Math.floor(mainPinLocation.left + MAIN_PIN_WIDTH / 2 - mapLocation.left);
+  var mainPinLocationY = Math.floor(mainPinLocation.top + MAIN_PIN_HEIGHT / 2 - mapLocation.top);
   if (!map.classList.contains('map--faded')) {
-    mainPinLocationY = Math.floor(mainPinLocation.top + MAIN_PIN_HEIGHT + MAIN_PIN_POINTER);
+    mainPinLocationY = Math.floor(mainPinLocation.top + MAIN_PIN_HEIGHT + MAIN_PIN_POINTER - mapLocation.top);
   }
 
   return {
