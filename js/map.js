@@ -24,6 +24,19 @@ var ARTICLE_QUANTITY = 8;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
 
+var MAP_COORDINATES = {
+  width: {
+    min: 300,
+    max: 900
+  },
+  height: {
+    min: 150,
+    max: 500
+  }
+};
+
+var map = document.querySelector('.map');
+
 // Функция расчета случайного числа в заданом диапазоне
 function calculateRandomInteger(min, max) {
   var rand = min + Math.random() * (max + 1 - min);
@@ -35,8 +48,8 @@ function calculateRandomInteger(min, max) {
 var createArticleData = function (quantity) {
   var articles = [];
   for (var i = 0; i < quantity; i++) {
-    var articleLocationX = calculateRandomInteger(300, 900);
-    var articleLocationY = calculateRandomInteger(150, 500);
+    var articleLocationX = calculateRandomInteger(MAP_COORDINATES.width.min, MAP_COORDINATES.width.max);
+    var articleLocationY = calculateRandomInteger(MAP_COORDINATES.height.min, MAP_COORDINATES.height.max);
 
     articles[i] = {
       author: {
@@ -65,10 +78,6 @@ var createArticleData = function (quantity) {
   }
   return articles;
 };
-
-// Активируем карту
-var map = document.querySelector('.map');
-map.classList.remove('map--faded');
 
 //
 var copyExample = document.querySelector('template').content;
@@ -131,7 +140,7 @@ var createArticleElement = function (article) {
   return articleElement;
 };
 
-// функцию заполнения блока DOM-элементами на основе массива JS-объектов
+// Функция заполнения блока DOM-элементами на основе массива JS-объектов
 var renderArticle = function (articleElement) {
   map.insertBefore(articleElement, pastArticle);
 };
@@ -147,8 +156,108 @@ var renderPin = function (pinElements) {
 
 // Вызовы функций
 var articles = createArticleData(ARTICLE_QUANTITY);
-var articleElement = createArticleElement(articles[0]);
-renderArticle(articleElement);
-
 var pinElements = createPinElements(articles);
-renderPin(pinElements);
+
+// Активация страницы
+
+var notice = document.querySelector('.notice');
+var myNoticeForm = notice.querySelector('.notice__form');
+var formParts = notice.querySelectorAll('fieldset');
+var mainPin = map.querySelector('.map__pin--main');
+
+var makeDisabledFormField = function (flag) {
+  for (var i = 0; i < formParts.length; i++) {
+    if (flag) {
+      formParts[i].setAttribute('disabled', 'disabled');
+    } else {
+      formParts[i].removeAttribute('disabled');
+    }
+  }
+};
+
+makeDisabledFormField(true);
+
+var activateMap = function () {
+  map.classList.remove('map--faded');
+};
+
+var activateForm = function () {
+  myNoticeForm.classList.remove('notice__form--disabled');
+};
+
+mainPin.addEventListener('mouseup', function () {
+  activateMap();
+  activateForm();
+  makeDisabledFormField(false);
+  renderPin(pinElements);
+  mainPinPosition = calculateMainPinPosition();
+  writeMainPinLocation(mainPinPosition.x, mainPinPosition.y);
+});
+
+// Координаты центральной метки
+var MAIN_PIN_WIDTH = 65;
+var MAIN_PIN_HEIGHT = 65;
+var MAIN_PIN_POINTER = 22;
+var addressField = notice.querySelector('#address');
+
+var getCoords = function (element) {
+  var box = element.getBoundingClientRect();
+  return {
+    top: box.top + pageYOffset,
+    left: box.left + pageXOffset
+  };
+};
+
+var mapLocation = getCoords(map);
+
+var mainPinLocation = getCoords(mainPin);
+var calculateMainPinPosition = function () {
+  var mainPinLocationX = Math.floor(mainPinLocation.left + MAIN_PIN_WIDTH / 2 - mapLocation.left);
+  var mainPinLocationY = Math.floor(mainPinLocation.top + MAIN_PIN_HEIGHT / 2 - mapLocation.top);
+  if (!map.classList.contains('map--faded')) {
+    mainPinLocationY = Math.floor(mainPinLocation.top + MAIN_PIN_HEIGHT + MAIN_PIN_POINTER - mapLocation.top);
+  }
+
+  return {
+    x: mainPinLocationX,
+    y: mainPinLocationY
+  };
+};
+var mainPinPosition = calculateMainPinPosition();
+
+var writeMainPinLocation = function (mainPinLocationX, mainPinLocationY) {
+  addressField.value = mainPinLocationX + ', ' + mainPinLocationY;
+};
+writeMainPinLocation(mainPinPosition.x, mainPinPosition.y);
+
+// Похожие объявления
+var removeDisplayedArticle = function () {
+  var displayedArticle = map.querySelector('.map__card');
+  if (displayedArticle) {
+    map.removeChild(displayedArticle);
+  }
+};
+
+var closePopupHandler = function (articleElement) {
+  var closeElement = articleElement.querySelector('.popup__close');
+  closeElement.addEventListener('mouseup', function () {
+    removeDisplayedArticle();
+  });
+};
+
+var pinOpenHandler = function (pinElement, article) {
+  pinElement.addEventListener('mouseup', function () {
+    removeDisplayedArticle();
+    var articleElement = createArticleElement(article);
+    closePopupHandler(articleElement);
+    renderArticle(articleElement);
+  });
+};
+
+var pinOpenHandlers = function () {
+  for (var i = 0; i < pinElements.length; i++) {
+    pinOpenHandler(pinElements[i], articles[i]);
+  }
+};
+
+pinOpenHandlers();
