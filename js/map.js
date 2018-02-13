@@ -311,7 +311,9 @@ var ROOMS_AND_CAPACITY = {
 var disableCapacity = function () {
   var capacityOption = capacity.querySelectorAll('option');
   var capacityValues = ROOMS_AND_CAPACITY[roomNumber.value];
-  capacity.value = capacityValues[0];
+  if (!capacityValues.includes(capacity.value)) {
+    capacity.value = capacityValues[0];
+  }
   capacityOption.forEach(function (option) {
     option.disabled = !capacityValues.includes(option.value);
   });
