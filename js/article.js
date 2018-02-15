@@ -7,7 +7,7 @@
   var pastArticle = document.querySelector('.map__filters-container');
 
   window.article = {
-    createArticleElement: function (article) {
+    createElement: function (article) {
       var articleElement = cloneArticle.cloneNode(true);
 
       articleElement.querySelector('h3').textContent = article.offer.title;
@@ -44,7 +44,7 @@
 
       return articleElement;
     },
-    renderArticle: function (articleElement) {
+    renderElement: function (articleElement) {
       map.insertBefore(articleElement, pastArticle);
     }
   };

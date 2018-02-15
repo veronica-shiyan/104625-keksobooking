@@ -12,7 +12,7 @@
   var mainPinLocation = window.util.getCoords(mainPin);
 
   window.mainPinCoords = {
-    calculateMainPinPosition: function () {
+    calculateLocation: function () {
       var mainPinLocationX = Math.floor(mainPinLocation.left + MAIN_PIN_WIDTH / 2 - mapLocation.left);
       var mainPinLocationY = Math.floor(mainPinLocation.top + MAIN_PIN_HEIGHT / 2 - mapLocation.top);
       if (!map.classList.contains('map--faded')) {
@@ -23,7 +23,7 @@
         y: mainPinLocationY
       };
     },
-    writeMainPinLocation: function (mainPinLocationX, mainPinLocationY) {
+    writeLocation: function (mainPinLocationX, mainPinLocationY) {
       addressField.value = mainPinLocationX + ', ' + mainPinLocationY;
     }
   };

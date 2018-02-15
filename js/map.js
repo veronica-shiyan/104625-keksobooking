@@ -8,12 +8,12 @@
   var mainPin = map.querySelector('.map__pin--main');
   var ARTICLE_QUANTITY = 8;
   var articles = window.data(ARTICLE_QUANTITY);
-  var pinElements = window.pins.createPinElements(articles);
+  var pinElements = window.pins.createElements(articles);
 
   window.util.makeDisabledFormField(formParts, true);
 
-  var mainPinPosition = window.mainPinCoords.calculateMainPinPosition();
-  window.mainPinCoords.writeMainPinLocation(mainPinPosition.x, mainPinPosition.y);
+  var mainPinPosition = window.mainPinCoords.calculateLocation();
+  window.mainPinCoords.writeLocation(mainPinPosition.x, mainPinPosition.y);
 
   var activateMap = function () {
     map.classList.remove('map--faded');
@@ -27,9 +27,9 @@
     activateMap();
     activateForm();
     window.util.makeDisabledFormField(formParts, false);
-    window.pins.renderPin(pinElements);
-    mainPinPosition = window.mainPinCoords.calculateMainPinPosition();
-    window.mainPinCoords.writeMainPinLocation(mainPinPosition.x, mainPinPosition.y);
+    window.pins.renderElements(pinElements);
+    mainPinPosition = window.mainPinCoords.calculateLocation();
+    window.mainPinCoords.writeLocation(mainPinPosition.x, mainPinPosition.y);
   });
 
   var removeDisplayedArticle = function () {
@@ -49,9 +49,9 @@
   var pinOpenHandler = function (pinElement, article) {
     pinElement.addEventListener('mouseup', function () {
       removeDisplayedArticle();
-      var articleElement = window.article.createArticleElement(article);
+      var articleElement = window.article.createElement(article);
       closePopupHandler(articleElement);
-      window.article.renderArticle(articleElement);
+      window.article.renderElement(articleElement);
     });
   };
 

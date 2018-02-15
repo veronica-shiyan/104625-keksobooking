@@ -8,7 +8,7 @@
   var PIN_HEIGHT = 70;
 
   window.pins = {
-    createPinElements: function (articles) {
+    createElements: function (articles) {
       var pinElements = [];
       for (var i = 0; i < articles.length; i++) {
         var pinElement = cloneMapPin.cloneNode(true);
@@ -21,7 +21,7 @@
       }
       return pinElements;
     },
-    renderPin: function (pinElements) {
+    renderElements: function (pinElements) {
       var fragmentPin = document.createDocumentFragment();
 
       for (var i = 0; i < pinElements.length; i++) {
