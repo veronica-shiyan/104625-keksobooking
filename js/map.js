@@ -15,33 +15,39 @@
     width: 1200,
     height: 750
   };
-  var MAP_BORDERS = [{
-    height: '150px',
-    bottom: '600'
-  }, {
-    height: '250px',
-    bottom: '0'
-  }];
+  var MAP_BORDERS = [
+    {
+      height: '150px',
+      bottom: '600'
+    }, {
+      height: '250px',
+      bottom: '0'
+    }
+  ];
   var MAIN_PIN_WIDTH = 65;
   var MAIN_PIN_HEIGHT = 65;
   var MAIN_PIN_POINTER = 22;
+  var ENTER_KEYCODE = 13;
   var map = document.querySelector('.map');
+  var pinsList = map.querySelector('.map__pins');
   var notice = document.querySelector('.notice');
   var myNoticeForm = notice.querySelector('.notice__form');
   var formParts = notice.querySelectorAll('fieldset');
   var mainPin = map.querySelector('.map__pin--main');
-  var ARTICLE_QUANTITY = 8;
-  var articles = window.data(ARTICLE_QUANTITY);
-  var pinElements = window.pins.createElements(articles);
   var mainPinPosition = null;
+
+  var startCoords = window.mainPinCoords.calculateLocation();
+
+  window.article.renderElement(window.articleElement);
+  window.articleElement.style.display = 'none';
 
   window.util.makeDisabledFormField(formParts, true);
 
-  var updateLocations = function () {
+  window.updateLocations = function () {
     mainPinPosition = window.mainPinCoords.calculateLocation();
     window.mainPinCoords.writeLocation(mainPinPosition.x, mainPinPosition.y);
   };
-  updateLocations();
+  window.updateLocations();
 
   var activateMap = function () {
     map.classList.remove('map--faded');
@@ -71,17 +77,36 @@
   var borderElements = initBorders(MAP_BORDERS);
 
   var isActivated = false;
-  mainPin.addEventListener('mouseup', function () {
+  var activatePage = function () {
     if (!isActivated) {
       activateMap();
       activateForm();
       window.util.makeDisabledFormField(formParts, false);
-      window.pins.renderElements(pinElements);
-      updateLocations();
+      window.backend.load(loadHandler, window.errorHandler);
+      window.updateLocations();
       isActivated = true;
+    }
+  };
+  mainPin.addEventListener('mouseup', activatePage);
+  mainPin.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ENTER_KEYCODE) {
+      activatePage();
     }
   });
 
+  window.inactivatePage = function () {
+    myNoticeForm.reset();
+    map.classList.add('map--faded');
+    myNoticeForm.classList.add('notice__form--disabled');
+    window.util.makeDisabledFormField(formParts, true);
+    mainPin.style.left = startCoords.x + 'px';
+    mainPin.style.top = startCoords.y + 'px';
+    window.mainPinCoords.writeLocation(startCoords.x, startCoords.y);
+    for (var i = 0; i < allPinElements.length; i++) {
+      pinsList.removeChild(allPinElements[i]);
+    }
+    isActivated = false;
+  };
 
   var describeBorderBehavior = function () {
     if (window.mainPinLocation.top <= MAP_COORDINATES.height.min - (MAIN_PIN_HEIGHT / 2 + MAIN_PIN_POINTER)) {
@@ -127,7 +152,7 @@
       };
 
       describeBorderBehavior();
-      updateLocations();
+      window.updateLocations();
     };
 
     var onMouseUp = function (upEvt) {
@@ -141,35 +166,9 @@
     document.addEventListener('mouseup', onMouseUp);
   });
 
-
-  var removeDisplayedArticle = function () {
-    var displayedArticle = map.querySelector('.map__card');
-    if (displayedArticle) {
-      map.removeChild(displayedArticle);
-    }
+  var allPinElements = [];
+  var loadHandler = function (articles) {
+    allPinElements = window.pins.createElements(articles);
+    window.pins.renderElements(allPinElements);
   };
-
-  var closePopupHandler = function (articleElement) {
-    var closeElement = articleElement.querySelector('.popup__close');
-    closeElement.addEventListener('mouseup', function () {
-      removeDisplayedArticle();
-    });
-  };
-
-  var pinOpenHandler = function (pinElement, article) {
-    pinElement.addEventListener('mouseup', function () {
-      removeDisplayedArticle();
-      var articleElement = window.article.createElement(article);
-      closePopupHandler(articleElement);
-      window.article.renderElement(articleElement);
-    });
-  };
-
-  var pinOpenHandlers = function () {
-    for (var i = 0; i < pinElements.length; i++) {
-      pinOpenHandler(pinElements[i], articles[i]);
-    }
-  };
-
-  pinOpenHandlers();
 })();
