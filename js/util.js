@@ -2,14 +2,6 @@
 
 (function () {
   window.util = {
-    calculateRandomInteger: function (min, max) {
-      var rand = min + Math.random() * (max + 1 - min);
-      rand = Math.floor(rand);
-      return rand;
-    },
-    getRandomElement: function (elements) {
-      return elements[Math.floor(Math.random() * elements.length)];
-    },
     makeDisabledFormField: function (elements, flag) {
       for (var i = 0; i < elements.length; i++) {
         if (flag) {
