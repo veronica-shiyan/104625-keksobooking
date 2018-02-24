@@ -2,6 +2,10 @@
 
 (function () {
   window.util = {
+    keycode: {
+      enter: 13,
+      esc: 27
+    },
     makeDisabledFormField: function (elements, flag) {
       for (var i = 0; i < elements.length; i++) {
         if (flag) {

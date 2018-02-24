@@ -1,8 +1,6 @@
 'use strict';
 
 (function () {
-  var ENTER_KEYCODE = 13;
-  var ESC_KEYCODE = 27;
   var map = document.querySelector('.map');
   var copyExample = document.querySelector('template').content;
   var cloneArticle = copyExample.querySelector('.map__card');
@@ -15,13 +13,13 @@
   };
 
   closeElement.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === ENTER_KEYCODE) {
+    if (evt.keyCode === window.util.keycode.enter) {
       closePopup();
     }
   });
 
   var onPopupEscPress = function (evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
+    if (evt.keyCode === window.util.keycode.esc) {
       closePopup();
     }
   };

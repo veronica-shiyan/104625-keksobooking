@@ -1,8 +1,6 @@
 'use strict';
 
 (function () {
-  var ESC_KEYCODE = 27;
-  var ENTER_KEYCODE = 13;
   var copyExample = document.querySelector('template').content;
 
   window.errorHandler = function (errorMessage) {
@@ -26,7 +24,7 @@
     element.insertAdjacentElement('afterbegin', closeElement);
 
     var onCloseElementEscPress = function (evt) {
-      if (evt.keyCode === ESC_KEYCODE) {
+      if (evt.keyCode === window.util.keycode.esc) {
         closeMessage();
       }
     };
@@ -42,7 +40,7 @@
     });
 
     closeElement.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === ENTER_KEYCODE) {
+      if (evt.keyCode === window.util.keycode.enter) {
         closeMessage();
       }
     });
