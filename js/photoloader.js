@@ -53,18 +53,16 @@
     readFiles(photoFiles, photoImage);
   }
 
+  photoContainer.addEventListener('dragstart', dragstartHandler);
+  photoContainer.addEventListener('dragover', dragoverHandler);
+  photoContainer.addEventListener('dragenter', dragenterHandler);
+  photoContainer.addEventListener('dragleave', dragleaveHandler);
+  photoContainer.addEventListener('drop', dropHandler);
+  photoContainer.addEventListener('dragend', dragendHandler);
+
   photoInput.addEventListener('change', function () {
     Array.from(photoInput.files).forEach(function (photoFiles) {
       photoLoadHandler(photoFiles);
-    });
-    var photoImages = photoContainer.querySelectorAll('img');
-    [].forEach.call(photoImages, function (photoImage) {
-      photoImage.addEventListener('dragstart', dragstartHandler);
-      photoImage.addEventListener('dragover', dragoverHandler);
-      photoImage.addEventListener('dragenter', dragenterHandler);
-      photoImage.addEventListener('dragleave', dragleaveHandler);
-      photoImage.addEventListener('drop', dropHandler);
-      photoImage.addEventListener('dragend', dragendHandler);
     });
   });
 
@@ -87,11 +85,17 @@
   });
 
   function dragstartHandler(evt) {
+    if (evt.target === photoContainer) {
+      return;
+    }
     evt.target.style.opacity = '0.4';
   }
 
   function dragoverHandler(evt) {
-    targetDropElement = evt.target;
+    if (evt.target !== photoContainer) {
+      targetDropElement = evt.target;
+    }
+
     if (evt.preventDefault) {
       evt.preventDefault();
     }
@@ -100,10 +104,16 @@
   }
 
   function dragenterHandler(evt) {
+    if (evt.target === photoContainer) {
+      return;
+    }
     evt.target.style.border = '2px dashed black';
   }
 
   function dragleaveHandler(evt) {
+    if (evt.target === photoContainer) {
+      return;
+    }
     targetDropElement = null;
     evt.target.style.border = PHOTO_STYLE.border;
   }
@@ -116,6 +126,9 @@
   }
 
   function dragendHandler(evt) {
+    if (evt.target === photoContainer) {
+      return;
+    }
     var url = '';
     if (targetDropElement && evt.target !== targetDropElement) {
       url = evt.target.src;
