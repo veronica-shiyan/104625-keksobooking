@@ -24,23 +24,7 @@
     window.map.updatePins(allArticlesClone.slice(0, MAX_PINS_QUANTITY));
   };
 
-  function typeChangeHandler(evt) {
-    houseTypeSelect.value = evt.target.value;
-    window.debounce(createNewPinsArray);
-  }
-
-  function priceChangeHandler(evt) {
-    housePriceSelect.value = evt.target.value;
-    window.debounce(createNewPinsArray);
-  }
-
-  function roomsChangeHandler(evt) {
-    houseRoomsSelect.value = evt.target.value;
-    window.debounce(createNewPinsArray);
-  }
-
-  function guestsChangeHandler(evt) {
-    houseGuestsSelect.value = evt.target.value;
+  function changeHandler() {
     window.debounce(createNewPinsArray);
   }
 
@@ -54,10 +38,10 @@
     window.debounce(createNewPinsArray);
   }
 
-  houseTypeSelect.addEventListener('change', typeChangeHandler);
-  housePriceSelect.addEventListener('change', priceChangeHandler);
-  houseRoomsSelect.addEventListener('change', roomsChangeHandler);
-  houseGuestsSelect.addEventListener('change', guestsChangeHandler);
+  houseTypeSelect.addEventListener('change', changeHandler);
+  housePriceSelect.addEventListener('change', changeHandler);
+  houseRoomsSelect.addEventListener('change', changeHandler);
+  houseGuestsSelect.addEventListener('change', changeHandler);
   houseFeaturesFieldset.addEventListener('change', featuresChangeHandler);
 
 
@@ -68,10 +52,8 @@
   var filterHousePrice = function (element) {
     if (housePriceSelect.value === 'any') {
       return true;
-    } else if (PRICE_RANGE[housePriceSelect.value].min <= element.offer.price && element.offer.price < PRICE_RANGE[housePriceSelect.value].max) {
-      return true;
     } else {
-      return false;
+      return PRICE_RANGE[housePriceSelect.value].min <= element.offer.price && element.offer.price < PRICE_RANGE[housePriceSelect.value].max;
     }
   };
 
@@ -89,12 +71,12 @@
     });
   };
 
-  function filterHouse(newArr) {
-    newArr = newArr.filter(filterHouseType)
+  function filterHouse(articles) {
+    articles = articles.filter(filterHouseType)
         .filter(filterHousePrice)
         .filter(filterHouseRooms)
         .filter(filterHouseGuests)
         .filter(filterHouseFeatures);
-    return newArr;
+    return articles;
   }
 })();

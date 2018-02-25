@@ -41,29 +41,6 @@
   var mainPinPosition = null;
   var startCoords = window.mainPinCoords.calculateLocation();
 
-  window.map = {
-    updateLocations: function () {
-      mainPinPosition = window.mainPinCoords.calculateLocation();
-      window.mainPinCoords.writeLocation(mainPinPosition.x, mainPinPosition.y);
-    },
-    updatePins: function (articles) {
-      removePins();
-      window.allPinElements = window.pins.createElements(articles);
-      window.pins.renderElements(window.allPinElements);
-    },
-    inactivatePage: function () {
-      myNoticeForm.reset();
-      map.classList.add('map--faded');
-      myNoticeForm.classList.add('notice__form--disabled');
-      window.util.makeDisabledFormField(formParts, true);
-      mainPin.style.left = startCoords.x + 'px';
-      mainPin.style.top = startCoords.y + 'px';
-      window.mainPinCoords.writeLocation(startCoords.x, startCoords.y);
-      removePins();
-      isActivated = false;
-    }
-  };
-
   window.allArticles = [];
   window.allPinElements = [];
 
@@ -72,7 +49,11 @@
 
   window.util.makeDisabledFormField(formParts, true);
 
-  window.map.updateLocations();
+  var updateLocations = function () {
+    mainPinPosition = window.mainPinCoords.calculateLocation();
+    window.mainPinCoords.writeLocation(mainPinPosition.x, mainPinPosition.y);
+  };
+  updateLocations();
 
   var activateMap = function () {
     map.classList.remove('map--faded');
@@ -125,6 +106,7 @@
     for (var i = 0; i < window.allPinElements.length; i++) {
       pinsList.removeChild(window.allPinElements[i]);
     }
+    window.allPinElements = [];
   };
 
   var describeBorderBehavior = function () {
@@ -190,4 +172,23 @@
     window.map.updatePins(window.allArticles.slice(0, MAX_PINS_QUANTITY));
   };
 
+  window.map = {
+    updateLocations: updateLocations,
+    updatePins: function (articles) {
+      removePins();
+      window.allPinElements = window.pins.createElements(articles);
+      window.pins.renderElements(window.allPinElements);
+    },
+    inactivatePage: function () {
+      myNoticeForm.reset();
+      map.classList.add('map--faded');
+      myNoticeForm.classList.add('notice__form--disabled');
+      window.util.makeDisabledFormField(formParts, true);
+      mainPin.style.left = startCoords.x + 'px';
+      mainPin.style.top = startCoords.y + 'px';
+      window.mainPinCoords.writeLocation(startCoords.x, startCoords.y);
+      removePins();
+      isActivated = false;
+    }
+  };
 })();

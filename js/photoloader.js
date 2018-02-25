@@ -15,7 +15,7 @@
   var avatarDropZone = document.querySelector('.notice__photo .drop-zone');
   var photoDropZone = photoContainer.querySelector('.drop-zone');
 
-  var readerFiles = function (file, previewImage) {
+  var readFiles = function (file, previewImage) {
     var fileName = file.name.toLowerCase();
 
     var matches = FILE_TYPES.some(function (it) {
@@ -32,7 +32,7 @@
   };
 
   function avatarLoadHandler(avatarFile) {
-    readerFiles(avatarFile, avatarImage);
+    readFiles(avatarFile, avatarImage);
   }
 
   avatarInput.addEventListener('change', function () {
@@ -46,7 +46,7 @@
     photoImage.style.width = PHOTO_STYLE.width + 'px';
     photoImage.style.height = PHOTO_STYLE.height + 'px';
     photoContainer.appendChild(photoImage);
-    readerFiles(photoFiles, photoImage);
+    readFiles(photoFiles, photoImage);
   }
 
   photoInput.addEventListener('change', function () {
