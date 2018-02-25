@@ -18,7 +18,7 @@
 
   var targetDropElement = null;
 
-  var readFiles = function (file, previewImage) {
+  function readFiles(file, previewImage) {
     var fileName = file.name.toLowerCase();
 
     var matches = FILE_TYPES.some(function (it) {
@@ -32,7 +32,7 @@
       });
       reader.readAsDataURL(file);
     }
-  };
+  }
 
   function avatarLoadHandler(avatarFile) {
     readFiles(avatarFile, avatarImage);
