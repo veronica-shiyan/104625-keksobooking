@@ -23,17 +23,17 @@
     closeElement.style.right = '0';
     element.insertAdjacentElement('afterbegin', closeElement);
 
-    var onCloseElementEscPress = function (evt) {
+    var closeElementEscPressHandler = function (evt) {
       if (evt.keyCode === window.util.keycode.esc) {
         closeMessage();
       }
     };
     var closeMessage = function () {
       element.style.display = 'none';
-      document.removeEventListener('keydown', onCloseElementEscPress);
+      document.removeEventListener('keydown', closeElementEscPressHandler);
     };
 
-    document.addEventListener('keydown', onCloseElementEscPress);
+    document.addEventListener('keydown', closeElementEscPressHandler);
 
     closeElement.addEventListener('click', function () {
       closeMessage();

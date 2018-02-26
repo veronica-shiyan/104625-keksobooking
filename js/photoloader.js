@@ -15,10 +15,11 @@
   var photoInput = form.querySelector('#images');
   var avatarDropZone = document.querySelector('.notice__photo .drop-zone');
   var photoDropZone = photoContainer.querySelector('.drop-zone');
+  var startAvatarSrc = avatarImage.src;
 
   var targetDropElement = null;
 
-  function readFiles(file, previewImage) {
+  var readFiles = function (file, previewImage) {
     var fileName = file.name.toLowerCase();
 
     var matches = FILE_TYPES.some(function (it) {
@@ -32,18 +33,18 @@
       });
       reader.readAsDataURL(file);
     }
-  }
+  };
 
-  function avatarLoadHandler(avatarFile) {
+  var avatarLoadHandler = function (avatarFile) {
     readFiles(avatarFile, avatarImage);
-  }
+  };
 
   avatarInput.addEventListener('change', function () {
     var avatarFile = avatarInput.files[0];
     avatarLoadHandler(avatarFile);
   });
 
-  function photoLoadHandler(photo) {
+  var photoLoadHandler = function (photo) {
     var photoFiles = photo;
     var photoImage = document.createElement('img');
     photoImage.style.width = PHOTO_STYLE.width + 'px';
@@ -51,14 +52,7 @@
     photoImage.style.border = PHOTO_STYLE.border;
     photoContainer.appendChild(photoImage);
     readFiles(photoFiles, photoImage);
-  }
-
-  photoContainer.addEventListener('dragstart', dragstartHandler);
-  photoContainer.addEventListener('dragover', dragoverHandler);
-  photoContainer.addEventListener('dragenter', dragenterHandler);
-  photoContainer.addEventListener('dragleave', dragleaveHandler);
-  photoContainer.addEventListener('drop', dropHandler);
-  photoContainer.addEventListener('dragend', dragendHandler);
+  };
 
   photoInput.addEventListener('change', function () {
     Array.from(photoInput.files).forEach(function (photoFiles) {
@@ -66,10 +60,10 @@
     });
   });
 
-  function dragoverLoadHandler(evt) {
+  var dragoverLoadHandler = function (evt) {
     evt.stopPropagation();
     evt.preventDefault();
-  }
+  };
 
   avatarDropZone.addEventListener('dragover', dragoverLoadHandler);
   photoDropZone.addEventListener('dragover', dragoverLoadHandler);
@@ -84,14 +78,14 @@
     photoInput.files = evt.dataTransfer.files;
   });
 
-  function dragstartHandler(evt) {
+  var dragstartHandler = function (evt) {
     if (evt.target === photoContainer) {
       return;
     }
     evt.target.style.opacity = '0.4';
-  }
+  };
 
-  function dragoverHandler(evt) {
+  var dragoverHandler = function (evt) {
     if (evt.target !== photoContainer) {
       targetDropElement = evt.target;
     }
@@ -101,31 +95,31 @@
     }
     evt.dataTransfer.dropEffect = 'move';
     return false;
-  }
+  };
 
-  function dragenterHandler(evt) {
+  var dragenterHandler = function (evt) {
     if (evt.target === photoContainer) {
       return;
     }
     evt.target.style.border = '2px dashed black';
-  }
+  };
 
-  function dragleaveHandler(evt) {
+  var dragleaveHandler = function (evt) {
     if (evt.target === photoContainer) {
       return;
     }
     targetDropElement = null;
     evt.target.style.border = PHOTO_STYLE.border;
-  }
+  };
 
-  function dropHandler(evt) {
+  var dropHandler = function (evt) {
     if (evt.stopPropagation) {
       evt.stopPropagation();
     }
     return false;
-  }
+  };
 
-  function dragendHandler(evt) {
+  var dragendHandler = function (evt) {
     if (evt.target === photoContainer) {
       return;
     }
@@ -140,5 +134,26 @@
     [].forEach.call(photoContainer.querySelectorAll('img'), function (photoElement) {
       photoElement.style.border = PHOTO_STYLE.border;
     });
-  }
+  };
+
+  photoContainer.addEventListener('dragstart', dragstartHandler);
+  photoContainer.addEventListener('dragover', dragoverHandler);
+  photoContainer.addEventListener('dragenter', dragenterHandler);
+  photoContainer.addEventListener('dragleave', dragleaveHandler);
+  photoContainer.addEventListener('drop', dropHandler);
+  photoContainer.addEventListener('dragend', dragendHandler);
+
+  window.photoloader = {
+    deleteAvatarImage: function () {
+      avatarImage.src = startAvatarSrc;
+    },
+    deletePhotoImage: function () {
+      if (photoContainer.lastChild.tagName !== 'IMG') {
+        return;
+      }
+      while (photoContainer.lastChild.tagName === 'IMG') {
+        photoContainer.removeChild(photoContainer.lastChild);
+      }
+    }
+  };
 })();
