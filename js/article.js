@@ -18,14 +18,14 @@
     }
   });
 
-  var onPopupEscPress = function (evt) {
+  var popupEscPressHandler = function (evt) {
     if (evt.keyCode === window.util.keycode.esc) {
       closePopup();
     }
   };
 
   closeElement.addEventListener('click', closePopup);
-  document.addEventListener('keydown', onPopupEscPress);
+  document.addEventListener('keydown', popupEscPressHandler);
 
   window.article = {
     createElement: function (articles) {

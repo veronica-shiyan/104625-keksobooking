@@ -93,12 +93,14 @@
       isActivated = true;
     }
   };
+
   mainPin.addEventListener('mouseup', activatePage);
   mainPin.addEventListener('keydown', function (evt) {
     if (evt.keyCode === window.util.keycode.enter) {
       activatePage();
     }
   });
+
   var removePins = function () {
     if (!window.allPinElements.length) {
       return;
@@ -133,6 +135,14 @@
     }
   };
 
+  var inactivateBorder = function () {
+    for (var i = 0; i < borderElements.length; i++) {
+      if (borderElements[i].style.display === 'block') {
+        borderElements[i].style.display = 'none';
+      }
+    }
+  };
+
   mainPin.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
 
@@ -141,7 +151,7 @@
       y: evt.pageY - window.mainPinLocation.top - window.pageYOffset - MAIN_PIN.height / 2 + window.util.getCoords(map).top
     };
 
-    var onMouseMove = function (moveEvt) {
+    var mouseMoveHandler = function (moveEvt) {
       moveEvt.preventDefault();
 
       mainPin.style.left = (moveEvt.clientX - shift.x) + 'px';
@@ -156,15 +166,15 @@
       window.map.updateLocations();
     };
 
-    var onMouseUp = function (upEvt) {
+    var mouseUpHandler = function (upEvt) {
       upEvt.preventDefault();
 
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
+      document.removeEventListener('mousemove', mouseMoveHandler);
+      document.removeEventListener('mouseup', mouseUpHandler);
     };
 
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
+    document.addEventListener('mousemove', mouseMoveHandler);
+    document.addEventListener('mouseup', mouseUpHandler);
   });
 
   var loadHandler = function (articles) {
@@ -181,6 +191,9 @@
     },
     inactivatePage: function () {
       myNoticeForm.reset();
+      inactivateBorder();
+      window.photoloader.deleteAvatarImage();
+      window.photoloader.deletePhotoImage();
       map.classList.add('map--faded');
       myNoticeForm.classList.add('notice__form--disabled');
       window.util.makeDisabledFormField(formParts, true);

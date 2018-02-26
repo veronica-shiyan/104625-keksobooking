@@ -24,11 +24,11 @@
     window.map.updatePins(allArticlesClone.slice(0, MAX_PINS_QUANTITY));
   };
 
-  function changeHandler() {
+  var changeHandler = function () {
     window.debounce(createNewPinsArray);
-  }
+  };
 
-  function featuresChangeHandler() {
+  var featuresChangeHandler = function () {
     checkedFeatures = [];
     for (var i = 0; i < houseFeaturesInputs.length; i++) {
       if (houseFeaturesInputs[i].checked === true) {
@@ -36,7 +36,7 @@
       }
     }
     window.debounce(createNewPinsArray);
-  }
+  };
 
   houseTypeSelect.addEventListener('change', changeHandler);
   housePriceSelect.addEventListener('change', changeHandler);
@@ -71,12 +71,12 @@
     });
   };
 
-  function filterHouse(articles) {
+  var filterHouse = function (articles) {
     articles = articles.filter(filterHouseType)
         .filter(filterHousePrice)
         .filter(filterHouseRooms)
         .filter(filterHouseGuests)
         .filter(filterHouseFeatures);
     return articles;
-  }
+  };
 })();
