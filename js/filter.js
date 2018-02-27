@@ -14,7 +14,6 @@
   var houseRoomsSelect = filtersForm.querySelector('#housing-rooms');
   var houseGuestsSelect = filtersForm.querySelector('#housing-guests');
   var houseFeaturesFieldset = filtersForm.querySelector('#housing-features');
-  var houseFeaturesInputs = houseFeaturesFieldset.querySelectorAll('input');
 
   var allArticlesClone = [];
   var checkedFeatures = [];
@@ -28,25 +27,14 @@
     window.debounce(createNewPinsArray);
   };
 
-  var featuresChangeHandler = function () {
-    checkedFeatures = [];
-    for (var i = 0; i < houseFeaturesInputs.length; i++) {
-      if (houseFeaturesInputs[i].checked === true) {
-        checkedFeatures.push(houseFeaturesInputs[i].value);
-      }
-    }
-    window.debounce(createNewPinsArray);
+  filtersForm.addEventListener('change', changeHandler);
+
+  var filterHouseInputs = function (element, select, prop) {
+    return select.value === 'any' ? true : (element.offer[prop] + '' === select.value);
   };
 
-  houseTypeSelect.addEventListener('change', changeHandler);
-  housePriceSelect.addEventListener('change', changeHandler);
-  houseRoomsSelect.addEventListener('change', changeHandler);
-  houseGuestsSelect.addEventListener('change', changeHandler);
-  houseFeaturesFieldset.addEventListener('change', featuresChangeHandler);
-
-
   var filterHouseType = function (element) {
-    return houseTypeSelect.value === 'any' ? true : (element.offer.type === houseTypeSelect.value);
+    return filterHouseInputs(element, houseTypeSelect, 'type');
   };
 
   var filterHousePrice = function (element) {
@@ -58,14 +46,18 @@
   };
 
   var filterHouseRooms = function (element) {
-    return houseRoomsSelect.value === 'any' ? true : ((element.offer.rooms + '') === houseRoomsSelect.value);
+    return filterHouseInputs(element, houseRoomsSelect, 'rooms');
   };
 
   var filterHouseGuests = function (element) {
-    return houseGuestsSelect.value === 'any' ? true : ((element.offer.guests + '') === houseGuestsSelect.value);
+    return filterHouseInputs(element, houseGuestsSelect, 'guests');
   };
 
   var filterHouseFeatures = function (element) {
+    var houseFeaturesInputs = houseFeaturesFieldset.querySelectorAll('input:checked');
+    checkedFeatures = [].map.call(houseFeaturesInputs, function (inputChecked) {
+      return inputChecked.value;
+    });
     return checkedFeatures.every(function (feature) {
       return element.offer.features.indexOf(feature) !== -1;
     });

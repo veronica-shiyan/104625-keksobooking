@@ -3,13 +3,15 @@
 (function () {
   var URL_GET = 'https://js.dump.academy/keksobooking/data';
   var URL_POST = 'https://js.dump.academy/keksobooking';
+  var STATUS_SUCCESS = 200;
+  var WAITING_TIME = 10000;
 
   var createNewRequest = function (url, type, data, onLoad, onError) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
-      if (xhr.status === 200) {
+      if (xhr.status === STATUS_SUCCESS) {
         onLoad(xhr.response);
       } else {
         onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
@@ -22,7 +24,7 @@
       onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
     });
 
-    xhr.timeout = 10000;
+    xhr.timeout = WAITING_TIME;
 
     xhr.open(type, url);
     if (data) {

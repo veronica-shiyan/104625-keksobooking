@@ -7,13 +7,9 @@
       esc: 27
     },
     makeDisabledFormField: function (elements, flag) {
-      for (var i = 0; i < elements.length; i++) {
-        if (flag) {
-          elements[i].setAttribute('disabled', 'disabled');
-        } else {
-          elements[i].removeAttribute('disabled');
-        }
-      }
+      [].forEach.call(elements, function (element) {
+        element.disabled = flag;
+      });
     },
     getCoords: function (element) {
       var box = element.getBoundingClientRect();
